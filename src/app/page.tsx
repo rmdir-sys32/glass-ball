@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import GlassBall from "./glass-ball";
+import GlassBall, { type GlassBallProps } from "./glass-ball";
 import MarbleV1 from "./marble-v1";
 import MarbleV2 from "./marble-v2";
 
@@ -13,6 +13,7 @@ export default function Page() {
   const [run, setRun] = useState(0);
   const [shaking, setShaking] = useState(false);
   const [version, setVersion] = useState(3);
+  const [backgroundScene, setBackgroundScene] = useState<GlassBallProps["backgroundScene"]>("studio");
 
   const launch = (speed: number) => {
     setShaking(false);
@@ -46,12 +47,25 @@ export default function Page() {
             <h1 style={{ fontFamily: "Georgia, serif", fontWeight: 400, fontSize: "clamp(54px, 8vw, 104px)", letterSpacing: "-0.06em", lineHeight: 0.9, margin: "0 0 28px" }}>Glass<br /><i>marble.</i></h1>
             <p style={{ color: "#a7a099", lineHeight: 1.7, fontSize: 15, maxWidth: 370, marginBottom: 40 }}>A small study in light, weight, and motion. Change the inner swirl, then send the marble rolling.</p>
 
-            <div style={{ borderTop: "1px solid #39332e", paddingTop: 24 }}>
+            {version === 3 && <div style={{ borderTop: "1px solid #39332e", paddingTop: 24 }}>
               <div style={{ color: "#b8aa9d", fontSize: 11, letterSpacing: "0.14em", marginBottom: 16 }}>SWIRL COLOUR</div>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
                 {presets.map((value) => <button key={value} onClick={() => setColor(value)} aria-label={`Set swirl colour ${value}`} aria-pressed={color === value} style={{ width: 34, height: 34, borderRadius: "50%", background: value, border: color === value ? "2px solid #fff1da" : "2px solid transparent", outline: color === value ? "1px solid #8e7760" : "none", outlineOffset: 3, cursor: "pointer" }} />)}
                 <input aria-label="Custom swirl colour" type="color" value={color} onChange={(event) => setColor(event.target.value)} style={{ width: 36, height: 36, background: "none", border: 0, cursor: "pointer" }} />
                 <code style={{ color: "#b7a89a", marginLeft: 8, fontSize: 12 }}>{color.toUpperCase()}</code>
+              </div>
+
+              <div style={{ color: "#b8aa9d", fontSize: 11, letterSpacing: "0.14em", margin: "28px 0 16px" }}>BACKGROUND SCENE</div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 28 }}>
+                {([
+                  ["studio", "Studio"],
+                  ["charcoal", "Charcoal"],
+                  ["warm", "Warm"],
+                ] as const).map(([scene, label]) => (
+                  <button key={scene} onClick={() => setBackgroundScene(scene)} aria-pressed={backgroundScene === scene} style={{ ...buttonStyle, background: backgroundScene === scene ? "#79502d" : "#29231f", borderColor: backgroundScene === scene ? "#dba96d" : "#514338" }}>
+                    {label}
+                  </button>
+                ))}
               </div>
 
               <div style={{ color: "#b8aa9d", fontSize: 11, letterSpacing: "0.14em", marginBottom: 16 }}>ROLL DIRECTION</div>
@@ -67,11 +81,11 @@ export default function Page() {
               >
                 {shaking ? "Stop shaker" : "Start shaker ↻"}
               </button>
-            </div>
+            </div>}
           </section>
 
-          <section style={{ border: "1px solid #322d28", borderRadius: 18, overflow: "hidden", background: version === 3 ? "#c9cccb" : "#171614", boxShadow: "0 30px 90px #0008" }}>
-            {version === 1 ? <MarbleV1 /> : version === 2 ? <MarbleV2 /> : <GlassBall key={run} color={color} initialVelocityX={velocity} shaking={shaking} style={{ height: "min(65vh, 620px)", minHeight: 420 }} />}
+          <section style={{ border: "1px solid #322d28", borderRadius: 18, overflow: "hidden", background: version === 3 ? (backgroundScene === "charcoal" ? "#232729" : backgroundScene === "warm" ? "#c4ad8d" : "#c9cccb") : "#171614", boxShadow: "0 30px 90px #0008" }}>
+            {version === 1 ? <MarbleV1 /> : version === 2 ? <MarbleV2 /> : <GlassBall key={run} color={color} initialVelocityX={velocity} shaking={shaking} backgroundScene={backgroundScene} style={{ height: "min(65vh, 620px)", minHeight: 420 }} />}
             <div style={{ padding: "14px 20px", borderTop: "1px solid #302c27", color: version === 3 ? "#514a43" : "#aaa097", fontSize: 11, letterSpacing: "0.12em", display: "flex", justifyContent: "space-between" }}><span>VERSION 0.{version}.0</span><span>{version === 3 ? "LIVE PHYSICS" : "REFERENCE SNAPSHOT"}</span></div>
           </section>
         </div>

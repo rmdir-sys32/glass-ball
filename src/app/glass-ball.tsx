@@ -48,6 +48,7 @@ export type GlassBallProps = {
   gravity?: number;
   /** Continuously orbit and rotate the marble to inspect it from every side. */
   shaking?: boolean;
+  backgroundScene?: "studio" | "charcoal" | "warm";
   className?: string;
   style?: CSSProperties;
 };
@@ -58,6 +59,7 @@ export default function GlassBall({
   initialVelocityX = 1.8,
   gravity = 8.5,
   shaking = false,
+  backgroundScene = "studio",
   className,
   style,
 }: GlassBallProps) {
@@ -68,7 +70,13 @@ export default function GlassBall({
     if (!element) return;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#c9cccb");
+    const scenes = {
+      studio: { top: "#dfe0dc", bottom: "#aeb5b6", panel: "#eef0eb", dark: "#8f9c9f", mid: "#c2c9c9", env: "#b9c0c0" },
+      charcoal: { top: "#54595b", bottom: "#232729", panel: "#f1f0e9", dark: "#161a1b", mid: "#858c8d", env: "#454b4d" },
+      warm: { top: "#f0e4d0", bottom: "#c4ad8d", panel: "#fff8e9", dark: "#76644e", mid: "#dec9a9", env: "#cbb99f" },
+    } as const;
+    const palette = scenes[backgroundScene];
+    scene.background = new THREE.Color(palette.bottom);
     const camera = new THREE.OrthographicCamera(-3, 3, 2.9, -2.9, 0.1, 30);
     camera.position.set(0, 0.15, 10);
     camera.lookAt(0, 0, 0);
@@ -87,15 +95,15 @@ export default function GlassBall({
     const backdropContext = backdropCanvas.getContext("2d");
     if (backdropContext) {
       const wall = backdropContext.createLinearGradient(0, 0, 0, 1024);
-      wall.addColorStop(0, "#dfe0dc");
-      wall.addColorStop(1, "#aeb5b6");
+      wall.addColorStop(0, palette.top);
+      wall.addColorStop(1, palette.bottom);
       backdropContext.fillStyle = wall;
       backdropContext.fillRect(0, 0, 1024, 1024);
-      backdropContext.fillStyle = "#eef0eb";
+      backdropContext.fillStyle = palette.panel;
       backdropContext.fillRect(100, 0, 150, 1024);
-      backdropContext.fillStyle = "#8f9c9f";
+      backdropContext.fillStyle = palette.dark;
       backdropContext.fillRect(720, 0, 70, 1024);
-      backdropContext.fillStyle = "#c2c9c9";
+      backdropContext.fillStyle = palette.mid;
       backdropContext.fillRect(790, 0, 72, 1024);
     }
     const backdropTexture = new THREE.CanvasTexture(backdropCanvas);
@@ -112,12 +120,12 @@ export default function GlassBall({
     reflectionCanvas.height = 512;
     const reflectionContext = reflectionCanvas.getContext("2d");
     if (reflectionContext) {
-      reflectionContext.fillStyle = "#b9c0c0";
+      reflectionContext.fillStyle = palette.env;
       reflectionContext.fillRect(0, 0, 1024, 512);
-      reflectionContext.fillStyle = "#f8f9f4";
+      reflectionContext.fillStyle = palette.panel;
       reflectionContext.fillRect(100, 60, 105, 290);
       reflectionContext.fillRect(630, 45, 145, 300);
-      reflectionContext.fillStyle = "#dce2e1";
+      reflectionContext.fillStyle = palette.mid;
       reflectionContext.fillRect(785, 80, 55, 260);
     }
     const reflectionTexture = new THREE.CanvasTexture(reflectionCanvas);
@@ -278,7 +286,7 @@ export default function GlassBall({
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, [color, coreColor, initialVelocityX, gravity, shaking]);
+  }, [color, coreColor, initialVelocityX, gravity, shaking, backgroundScene]);
 
   return <div ref={host} className={className} style={{ width: "100%", height: 520, overflow: "hidden", ...style }} role="img" aria-label="Rolling glass marble with a suspended golden core" />;
 }
