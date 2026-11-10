@@ -1,20 +1,20 @@
 # Glass Ball versions
 
-Entries are ordered from oldest to newest. The first tagged Git snapshot is
-`v0.1.0`; the earlier experiments below predate version control.
+Entries are ordered from oldest to newest. Each version has a separate preview
+component, selectable from the main page.
 
-## Early design studies (before Git)
+## v0.1.0 — First marble
 
-1. Built the first amber 3D marble with gravity, bounce, and rolling.
-2. Added a colour control and a shaker mode for continuous 3D rotation.
-3. Replaced the opaque shell and bulky inner shape with clear glass and thin ribbons.
+- Preserve the first red marble preview as a reference snapshot.
 
-## v0.1.0 — Clear swirl marble
+## v0.2.0 — Golden core
 
-- Use two horizontal, tapered colour ribbons inside neutral glass.
-- Add a light studio backdrop with panels visible through and reflected on the shell.
-- Keep the marble reusable through colour, motion, and gravity props.
-- Provide an interactive Next.js preview with colour, direction, and shaker controls.
+- Preserve the clear marble with its golden inner swirl as a reference snapshot.
+
+## v0.3.0 — Clear swirl marble
+
+- Add the live, reusable marble with adjustable swirl colour, gravity, rolling, and shaker controls.
+- Keep all three versions selectable from one preview page.
 
 For future changes, add a new version below this entry, commit it, and tag the
 commit so each version can be checked out independently.
