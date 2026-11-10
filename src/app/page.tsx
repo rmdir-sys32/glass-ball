@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import GlassBall from "./glass-ball";
+import MarbleV1 from "./marble-v1";
+import MarbleV2 from "./marble-v2";
 
 const presets = ["#ad642a", "#477e8d", "#9c5379", "#5d8b52"];
 
@@ -10,6 +12,7 @@ export default function Page() {
   const [velocity, setVelocity] = useState(1.8);
   const [run, setRun] = useState(0);
   const [shaking, setShaking] = useState(false);
+  const [version, setVersion] = useState(3);
 
   const launch = (speed: number) => {
     setShaking(false);
@@ -24,6 +27,18 @@ export default function Page() {
           <span style={{ letterSpacing: "0.22em", fontSize: 12, color: "#dba96d", fontWeight: 700 }}>MATERIAL STUDY / 001</span>
           <span style={{ color: "#8f8880", fontSize: 12 }}>THREE.JS · GLASS · MOTION</span>
         </header>
+
+        <nav aria-label="Marble versions" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 32 }}>
+          {[
+            [1, "v1 · Red glass"],
+            [2, "v2 · Golden core"],
+            [3, "v3 · Clear ribbons"],
+          ].map(([number, label]) => (
+            <button key={number} onClick={() => setVersion(Number(number))} aria-pressed={version === number} style={{ ...buttonStyle, background: version === number ? "#79502d" : "#29231f", borderColor: version === number ? "#dba96d" : "#514338" }}>
+              {label}
+            </button>
+          ))}
+        </nav>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))", gap: "clamp(28px, 5vw, 72px)", alignItems: "center" }}>
           <section>
@@ -55,9 +70,9 @@ export default function Page() {
             </div>
           </section>
 
-          <section style={{ border: "1px solid #322d28", borderRadius: 18, overflow: "hidden", background: "#c9cccb", boxShadow: "0 30px 90px #0008" }}>
-            <GlassBall key={run} color={color} initialVelocityX={velocity} shaking={shaking} style={{ height: "min(65vh, 620px)", minHeight: 420 }} />
-            <div style={{ padding: "14px 20px", borderTop: "1px solid #302c27", color: "#857d74", fontSize: 11, letterSpacing: "0.12em", display: "flex", justifyContent: "space-between" }}><span>FIG. 01 — GLASS MARBLE</span><span>LIVE PHYSICS</span></div>
+          <section style={{ border: "1px solid #322d28", borderRadius: 18, overflow: "hidden", background: version === 3 ? "#c9cccb" : "#171614", boxShadow: "0 30px 90px #0008" }}>
+            {version === 1 ? <MarbleV1 /> : version === 2 ? <MarbleV2 /> : <GlassBall key={run} color={color} initialVelocityX={velocity} shaking={shaking} style={{ height: "min(65vh, 620px)", minHeight: 420 }} />}
+            <div style={{ padding: "14px 20px", borderTop: "1px solid #302c27", color: version === 3 ? "#514a43" : "#aaa097", fontSize: 11, letterSpacing: "0.12em", display: "flex", justifyContent: "space-between" }}><span>VERSION 0.{version}.0</span><span>{version === 3 ? "LIVE PHYSICS" : "REFERENCE SNAPSHOT"}</span></div>
           </section>
         </div>
       </div>
